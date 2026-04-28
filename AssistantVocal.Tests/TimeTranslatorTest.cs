@@ -41,5 +41,12 @@ namespace AssistantVocal.Tests
             Assert.AreEqual("trois heures vingt-cinq de l'après-midi", TimeTranslator.GetTimeAsText(new DateTime(2026, 4, 28, 15, 25, 0)));
             Assert.AreEqual("minuit et quart", TimeTranslator.GetTimeAsText(new DateTime(2026, 4, 28, 0, 15, 0)));
         }
+
+        [TestMethod]
+        public void GetTimeAsText_MinutesApresDemiHeure_RetourneTexte()
+        {
+            Assert.AreEqual("neuf heures moins le quart du matin", TimeTranslator.GetTimeAsText(new DateTime(2026, 4, 28, 8, 45, 0)));
+            Assert.AreEqual("une heure moins vingt-cinq de l'après-midi", TimeTranslator.GetTimeAsText(new DateTime(2026, 4, 28, 12, 35, 0)));
+        }
     }
 }
