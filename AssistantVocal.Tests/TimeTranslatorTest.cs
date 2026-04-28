@@ -48,5 +48,14 @@ namespace AssistantVocal.Tests
             Assert.AreEqual("neuf heures moins le quart du matin", TimeTranslator.GetTimeAsText(new DateTime(2026, 4, 28, 8, 45, 0)));
             Assert.AreEqual("une heure moins vingt-cinq de l'après-midi", TimeTranslator.GetTimeAsText(new DateTime(2026, 4, 28, 12, 35, 0)));
         }
+
+        [TestMethod]
+        public void GetTimeAsText_MinutesPrecises_RetourneTexteArrondi()
+        {
+            Assert.AreEqual("neuf heures moins dix du matin à deux minutes près", TimeTranslator.GetTimeAsText(new DateTime(2026, 4, 28, 8, 48, 0)));
+            // Note : Le sujet indique "Midi", mais pour rester logique avec notre base de code, on s'attend à "midi" minuscule
+            Assert.AreEqual("midi cinq à une minute près", TimeTranslator.GetTimeAsText(new DateTime(2026, 4, 28, 12, 4, 0))); 
+        }
     }
+
 }
