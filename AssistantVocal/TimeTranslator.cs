@@ -20,9 +20,12 @@ namespace AssistantVocal
         {
             int hour = time.Hour;
             int minute = time.Minute;
-            
-            // Si on est dans la deuxième moitié de l'heure, on se base sur l'heure suivante
-            int displayHour = minute > 30 ? (hour + 1) % 24 : hour;
+
+            // Calcul de la cible multiple de 5 la plus proche et de la différence
+            int targetMinute = (int)Math.Round(minute / 5.0) * 5;
+            int diff = Math.Abs(minute - targetMinute);
+
+            int displayHour = targetMinute > 30 ? (hour + 1) % 24 : hour;
 
             string heureTexte = "";
             string periode = "";
@@ -33,18 +36,23 @@ namespace AssistantVocal
             {
                 int h12 = displayHour > 12 ? displayHour - 12 : displayHour;
                 periode = displayHour < 12 ? " du matin" : " de l'après-midi";
-                
-                // Gestion singulier/pluriel pour "heure"
                 string s = h12 == 1 ? "" : "s";
                 heureTexte = $"{Heures[h12]} heure{s}";
             }
 
-            if (minute == 0) return (heureTexte + periode).Trim();
+            string minuteTexte = (targetMinute % 60 != 0 && Minutes.ContainsKey(targetMinute)) ? $" {Minutes[targetMinute]}" : "";
+            
+            string resultatBase = (displayHour == 12 || displayHour == 0) ? $"{heureTexte}{minuteTexte}" : $"{heureTexte}{minuteTexte}{periode}";
 
-            string minuteTexte = Minutes.ContainsKey(minute) ? $" {Minutes[minute]}" : "";
+            // Ajout du suffixe de précision si nécessaire
+            if (diff > 0)
+            {
+                string diffTexte = diff == 1 ? "une" : "deux";
+                string minutePluriel = diff > 1 ? "s" : "";
+                return $"{resultatBase} à {diffTexte} minute{minutePluriel} près";
+            }
 
-            if (displayHour == 12 || displayHour == 0) return $"{heureTexte}{minuteTexte}";
-            return $"{heureTexte}{minuteTexte}{periode}";
+            return resultatBase;
         }
     }
 }
