@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="AssistantVocal.Tests/AssistantVocal.Tests.csproj" />
+  <Project Path="AssistantVocal/AssistantVocal.csproj" />
+</Solution>
