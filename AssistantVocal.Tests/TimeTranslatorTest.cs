@@ -33,5 +33,13 @@ namespace AssistantVocal.Tests
             var date = new DateTime(2026, 4, 28, 0, 0, 0);
             Assert.AreEqual("minuit", TimeTranslator.GetTimeAsText(date));
         }
+
+        [TestMethod]
+        public void GetTimeAsText_MinutesPremiereDemiHeure_RetourneTexte()
+        {
+            Assert.AreEqual("midi dix", TimeTranslator.GetTimeAsText(new DateTime(2026, 4, 28, 12, 10, 0)));
+            Assert.AreEqual("trois heures vingt-cinq de l'après-midi", TimeTranslator.GetTimeAsText(new DateTime(2026, 4, 28, 15, 25, 0)));
+            Assert.AreEqual("minuit et quart", TimeTranslator.GetTimeAsText(new DateTime(2026, 4, 28, 0, 15, 0)));
+        }
     }
 }
