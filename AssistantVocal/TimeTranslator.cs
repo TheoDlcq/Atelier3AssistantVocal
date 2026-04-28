@@ -12,12 +12,8 @@ namespace AssistantVocal
 
         private static readonly Dictionary<int, string> Minutes = new Dictionary<int, string>
         {
-            { 5, "cinq" },
-            { 10, "dix" },
-            { 15, "et quart" },
-            { 20, "vingt" },
-            { 25, "vingt-cinq" },
-            { 30, "et demi" }
+            { 5, "cinq" }, { 10, "dix" }, { 15, "et quart" }, { 20, "vingt" }, { 25, "vingt-cinq" }, { 30, "et demi" },
+            { 35, "moins vingt-cinq" }, { 40, "moins vingt" }, { 45, "moins le quart" }, { 50, "moins dix" }, { 55, "moins cinq" }
         };
 
         public static string GetTimeAsText(DateTime time)
@@ -25,31 +21,29 @@ namespace AssistantVocal
             int hour = time.Hour;
             int minute = time.Minute;
             
+            // Si on est dans la deuxième moitié de l'heure, on se base sur l'heure suivante
+            int displayHour = minute > 30 ? (hour + 1) % 24 : hour;
+
             string heureTexte = "";
             string periode = "";
 
-            // 1. Détermination de l'heure de base
-            if (hour == 12) heureTexte = "midi";
-            else if (hour == 0) heureTexte = "minuit";
+            if (displayHour == 12) heureTexte = "midi";
+            else if (displayHour == 0) heureTexte = "minuit";
             else 
             {
-                int displayHour = hour > 12 ? hour - 12 : hour;
-                periode = hour < 12 ? " du matin" : " de l'après-midi";
-                heureTexte = $"{Heures[displayHour]} heures";
+                int h12 = displayHour > 12 ? displayHour - 12 : displayHour;
+                periode = displayHour < 12 ? " du matin" : " de l'après-midi";
+                
+                // Gestion singulier/pluriel pour "heure"
+                string s = h12 == 1 ? "" : "s";
+                heureTexte = $"{Heures[h12]} heure{s}";
             }
 
-            // 2. Si heure pile, on renvoie directement
             if (minute == 0) return (heureTexte + periode).Trim();
 
-            // 3. Ajout des minutes
             string minuteTexte = Minutes.ContainsKey(minute) ? $" {Minutes[minute]}" : "";
 
-            // 4. Assemblage (Midi et minuit ne prennent pas de période)
-            if (hour == 12 || hour == 0)
-            {
-                return $"{heureTexte}{minuteTexte}";
-            }
-
+            if (displayHour == 12 || displayHour == 0) return $"{heureTexte}{minuteTexte}";
             return $"{heureTexte}{minuteTexte}{periode}";
         }
     }
